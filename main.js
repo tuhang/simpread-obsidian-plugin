@@ -795,7 +795,8 @@ class SimpReadPlugin extends obsidian.Plugin {
                 const urls = JSON.parse( data );
                 Object.keys( urls ).forEach( url => {
                     let uri = this.settings.assets_root == 'root' ? urls[ url ] : `|||${ urls[ url ] }|||`;
-                    md = md.replaceAll( url, uri );
+                    uri     = uri.replace( /\\/ig, '/' );
+                    md      = md.replaceAll( url, uri );
                 });
                 console.log( '==== replace img relative from indexes.json ====' );
                 console.log( md );
