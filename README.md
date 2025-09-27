@@ -1,14 +1,22 @@
-<p align="center">
-   <img src="https://user-images.githubusercontent.com/81074/170913930-f01e91fe-0d65-4bf7-b0da-38248989f1e6.png" />
-</p>
+<p align="center"><img src="https://user-images.githubusercontent.com/81074/170913930-f01e91fe-0d65-4bf7-b0da-38248989f1e6.png" /></p>
+
+# 描述
+
+全新 3.0 版，大幅优化了配置相关的内容，目前分为两种使用方案：
+
+1️⃣ 轻量级使用，**安装此插件后无须任何设置**，配合 [导入到 Obsidian](https://github.com/Kenshin/simpread/discussions/2902) 就能将实现剪藏功能（包括图片本地化）
+
+2️⃣ 重度级使用，当设置了 `simpread_config.json` 就能实现：**集文章标注实时同步到 Obsidain、本地快照实时保存到本地、管理你全部的稍后读于一身的 Obsidian + 简悦全流程化一站式解决方案**。
+
+不仅如此：还支持标 Command Support 等众多 Obsidian 功能。
 
 # 视频
 
 https://user-images.githubusercontent.com/81074/135744012-ea403cb7-3145-401a-b9d5-ac588ff82975.mp4
 
-# 描述
+# 官网
 
-这是简悦推出的 Obsidian 插件，利用此插件可以方便的将简悦的稍后读、标注一键生成文献笔记，不仅如此：还支持标注时实时生成文献笔记、Command Support 支持等功能。
+https://github.com/Kenshin/simpread-obsidian-plugin
 
 # 版本
 
@@ -22,9 +30,11 @@ https://user-images.githubusercontent.com/81074/135744012-ea403cb7-3145-401a-b9d
 
 - 标注的页面也可以同步生成本地永久快照。
 
-- 每条标注均可链接会本地永久快照的原文对应位置。
+- 每条标注均可链接到本地永久快照的原文对应位置。
 
 - 得益于简悦精准的阅读模式匹配功能以及 HTML → Markdown 方案，通过此方式生成的 Markdown 的精准度最高，甚至可以匹配数学公式（LaTeX）
+
+- 使用 Command Support 可以将任意稍后读转换为 Markdown，可以弥补  [Markdown 模板辅助增强](https://github.com/Kenshin/simpread/discussions/3725) 仅能用于阅读模式的缺陷。
 
 # 集成标注功能
 
@@ -34,43 +44,31 @@ https://user-images.githubusercontent.com/81074/174549318-892ed045-49f2-4c3f-967
 
 # 受众
 
-如果你是简悦 + Obsidian 的深度使用者，尤其是使用同步助手的用户，非常建议使用此方式，会节省你大量的时间。
+如果你只希望实现 Obsidian 剪藏功能、无须配置的轻量级使用者 [详细说明](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-14330230)
 
-如果只是轻量级使用简悦的话，我也是 Obsidian 的用户，而简悦与 Obsidian 都是基于 Local first 概念，因此有很多的联动性：
+如果你是简悦 + Obsidian 的深度使用者，尤其是使用同步助手的用户，非常建议使用此方式，会节省你大量的时间，可使用下面的 [**配置库方案**](https://github.com/Kenshin/simpread/discussions/4531#discussioncomment-3844881) 或 [**一站式教程**](https://www.yuque.com/kenshin/simpread/fr8zo5)
 
-- [利用简悦插件 Live Editor 来助力你的双向链接笔记剪藏流程](https://zhuanlan.zhihu.com/p/412710060)
+# 配置库
 
-- [自动导入标注到 Obsidian（不使用同步助手方案）](https://github.com/Kenshin/simpread/discussions/3932)
+[简悦 · 配置库](https://github.com/Kenshin/simpread/discussions/4531) 是简悦官方推出的一套针对新用户的极简配置方案，方便新用户用最快的方式使用简悦的各种高级服务，配置库内置了常用的双链笔记用法，如：Notion、Obsidian、Logseq、Roam Research，同时包含了简悦在阅读模式上的一些常规插件：Live Editor、题图、Safari 阅读模式等。
 
-- [利用 Dataview + Blue Topaz + Markdown 辅助增强 + 导入到 Obsidian 插件，实现对标注的汇总与回顾](https://github.com/Kenshin/simpread/discussions/3807)
-
-关于简悦与 Obsidian 的更多联动 [请看这里](https://github.com/Kenshin/simpread/discussions?discussions_q=label%3Aobsidian)。
+目前配置库包含了 Obsidian 的一站式配置方案，细节 [请看这里](https://github.com/Kenshin/simpread/discussions/4531#discussioncomment-3844881)。
 
 # 一站式教程
 
-为了降低使用门槛，简悦官方推出了 [配置库](https://github.com/Kenshin/simpread/discussions/4531) 方案，内置了此插件的 [Obsidian 配置库](https://github.com/Kenshin/simpread/discussions/4531#discussioncomment-3844881)。
-
-![](https://user-images.githubusercontent.com/81074/195000268-f6af3191-8a92-4f1c-ab6c-7a0abe8edcca.png)
-
-# 使用前提
-
-此插件需要使用 [简悦 · 同步助手](http://ksria.com/simpread/docs/#/Sync)，才可发挥最大的效果，如何配置同步助手 [请看这里](https://kb.simpread.pro/#/page/配置同步助手)。
+https://www.yuque.com/kenshin/simpread/fr8zo5
 
 # 安装与升级
 
-此插件没有上架到 Obsdian 第三方社区，但仍可以通过 [此方式](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-2831907) 自动安装。
+此插件没有上架到 Obsdian 第三方社区，可通过 [此方式](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-2831907) 自动安装。
 
-如果你已经安装了此插件，[下载最新版](https://github.com/kenshin/simpread-obsidian-plugin/releases/latest) 对应的 `main.js` 与 `manifest.json` 后进入到 `Obsidian 库文件/.obsidian/simpread` 目录下，替换即可。
-
-此版本也同步更新到 [Obsidian 高级版配置库](https://github.com/Kenshin/simpread/discussions/4531#discussioncomment-3844881) 压缩包。
-
-# 文档
-
-请移步到 [官方文档](https://github.com/Kenshin/simpread/discussions/2889) 查看，以下是各个功能的介绍：
+# 功能
 
 - [Server Settings](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-1388527)
 
-- [Config Setting](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-1389535)
+- [Saved Settings](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-1389535)
+
+- [Image Hosting](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-10446316)
 
 - [Sync Settings](https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-1393730)
 
@@ -92,9 +90,9 @@ https://github.com/Kenshin/simpread/discussions/2889#discussioncomment-2831918
 
 - 简悦稍后读 → Obsidian 属于单向更新。
 
-- 在通过此插件生成的 Markdown 的任何改动都可能被覆盖。
+- 通过此插件生成的 Markdown 的任何改动都可能被覆盖。
 
-- 当删除操作时，仅能删除简悦稍后读，无法同步删除 Obsidian 对应的文件。
+- 在简悦删除稍后读仅能删除扩展端的稍后读，无法同步删除 Obsidian 对应的文件。
 
 # 关联
 
