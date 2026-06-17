@@ -1,4 +1,5 @@
 var obsidian = require( 'obsidian' );
+const { uniqueMarkdownPath } = require( './filename-utils' );
 const http      = require( 'http' ),
       fs        = require( 'fs' ),
       path      = require( 'path' ),
@@ -200,12 +201,15 @@ class UnreadSuggest extends obsidian.SuggestModal {
             this.template2( unread, this.unrdist, md => {
                 const //path  = this.app.vault.adapter.basePath + '/' + this.settings.folder,
                       path  = this.app.vault.adapter.path.join( this.app.vault.adapter.basePath, this.settings.folder ),
-                      title = this.safe( this.parseTitle( this.settings.title, unread ));
+                      title = this.safe( this.parseTitle( this.settings.title, unread )),
+                      targetFilePath = uniqueMarkdownPath( this.app.vault.adapter.path, this.app.vault.adapter.fs, path, title );
                 //this.app.vault.adapter.fs.writeFileSync( path + '/' + title + '.md', md );
-                this.app.vault.adapter.fs.writeFileSync( this.app.vault.adapter.path.join( path, title + '.md' ), md );
+                !this.app.vault.adapter.fs.existsSync( path ) && this.app.vault.adapter.fs.mkdirSync( path, { recursive: true });
+                this.app.vault.adapter.fs.writeFileSync( targetFilePath, md );
                 setTimeout( () => {
-                    const file = this.app.vault.getFiles().find( f => f.name === title + '.md' );
-                    file && this.app.workspace.getMostRecentLeaf().openFile( file );
+                    const targetVaultPath = this.app.vault.adapter.path.relative( this.app.vault.adapter.basePath, targetFilePath ).replace( /\\/g, '/' ),
+                          createdFile     = this.app.vault.getFiles().find( f => f.path === targetVaultPath );
+                    createdFile && this.app.workspace.getMostRecentLeaf().openFile( createdFile );
                 }, 100 );
             });
         } catch ( error ) {
@@ -463,14 +467,14 @@ class SimpReadPlugin extends obsidian.Plugin {
                                 const title = this.safe( this.parseTitle( this.settings.title, unread )),
                                       folder= this.settings.sub_folder ? title.replace( /@annote|@all/i, '' ) : '',
                                       path  = this.app.vault.adapter.path.join( this.app.vault.adapter.basePath, this.settings.folder, folder ),
-                                      file  = this.app.vault.adapter.path.resolve( path, this.safe( title ) + '.md' );
+                                      file  = uniqueMarkdownPath( this.app.vault.adapter.path, this.app.vault.adapter.fs, path, this.safe( title ) );
                                 //md = this.relative( title, md );
                                 //this.app.vault.adapter.fs.writeFileSync( this.app.vault.adapter.path.join( path, this.safe( title ) + '.md' ), md );
+                                !this.app.vault.adapter.fs.existsSync( path ) && this.app.vault.adapter.fs.mkdirSync( path, { recursive: true });
                                 this.replaceImage( title, md, str => {
                                     md = str;
                                     md = this.relative( title, md, 'unread' );
-                                    this.read( body.type, title, ( file, md ) => this.update( file, md, { md } ) );
-                                    this.app.vault.adapter.fs.writeFileSync( this.app.vault.adapter.path.join( path, this.safe( title ) + '.md' ), md );
+                                    this.app.vault.adapter.fs.writeFileSync( file, md );
                                 });
                             });
                         } else {
@@ -491,7 +495,12 @@ class SimpReadPlugin extends obsidian.Plugin {
                             this.replaceImage( body.title, body.md, md => {
                                 body.md = md;
                                 body.md = this.relative( body.title, body.md, 'unread' );
-                                this.read( body.type, body.title, ( file, md ) => this.update( file, md, body ) );
+                                this.read( body.type, body.title, ( file, oldMd ) => {
+                                    const targetFile = oldMd && !body.diff
+                                        ? this.uniqueMarkdownFile( body.type, body.title )
+                                        : file;
+                                    this.update( targetFile, oldMd, body );
+                                });
                             });
                         }
                         res.setHeader( 'Content-Type', 'application/json' );
@@ -650,6 +659,12 @@ class SimpReadPlugin extends obsidian.Plugin {
         this.app.vault.adapter.fs.writeFileSync( file, body.md );
     }
 
+    uniqueMarkdownFile( type, title ) {
+        const folder = type && type.startsWith( 'collection' ) ? type.replace( 'collection:', '' ) : this.settings.sub_folder ? '/' + title.replace( /@annote|@all/i, '' ) : '',
+              path   = this.app.vault.adapter.path.join( this.app.vault.adapter.basePath, this.settings.folder, folder );
+        return uniqueMarkdownPath( this.app.vault.adapter.path, this.app.vault.adapter.fs, path, this.safe( title ) );
+    }
+
     read( type, title, callback ) {
         const folder= type && type.startsWith( 'collection' ) ? type.replace( 'collection:', '' ) : this.settings.sub_folder ? '/' + title.replace( /@annote|@all/i, '' ) : '',
               path  = this.app.vault.adapter.path.join( this.app.vault.adapter.basePath, this.settings.folder, folder ),
@@ -727,12 +742,7 @@ class SimpReadPlugin extends obsidian.Plugin {
                         const title = this.safe( this.parseTitle( this.settings.title, unread )),
                               folder= this.settings.sub_folder ? title.replace( /@annote|@all/i, '' ) : '',
                               path  = this.app.vault.adapter.path.join( this.app.vault.adapter.basePath, this.settings.folder, folder ),
-                              file  = this.app.vault.adapter.path.resolve( path, this.safe( title ) + '.md' );
-                        // when override remove exist file
-                        somefiles.forEach( remove => {
-                            this.app.vault.adapter.fs.existsSync( file ) &&
-                                this.app.vault.adapter.fs.unlinkSync( file );
-                        });
+                              file  = uniqueMarkdownPath( this.app.vault.adapter.path, this.app.vault.adapter.fs, path, this.safe( title ) );
                         !this.app.vault.adapter.fs.existsSync( path ) && fs.mkdirSync( path, { recursive: true });
                         //this.app.vault.adapter.fs.writeFileSync( file, this.relative( title, md ));
                         this.replaceImage( title, md, str => {
