@@ -66,7 +66,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh release create "${{ steps.release.outputs.tag }}" \
-            main.js manifest.json styles.css data.json simpread.zip \
-            --title "${{ steps.release.outputs.tag }} 修复版" \
-            --notes-file "${{ steps.release.outputs.notes }}"
+          if gh release view "${{ steps.release.outputs.tag }}" >/dev/null 2>&1; then
+            gh release edit "${{ steps.release.outputs.tag }}" \
+              --title "${{ steps.release.outputs.tag }} 修复版" \
+              --notes-file "${{ steps.release.outputs.notes }}"
+            gh release upload "${{ steps.release.outputs.tag }}" \
+              main.js manifest.json styles.css data.json simpread.zip \
+              --clobber
+          else
+            gh release create "${{ steps.release.outputs.tag }}" \
+              main.js manifest.json styles.css data.json simpread.zip \
+              --title "${{ steps.release.outputs.tag }} 修复版" \
+              --notes-file "${{ steps.release.outputs.notes }}"
+          fi

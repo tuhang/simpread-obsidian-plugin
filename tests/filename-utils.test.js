@@ -2,9 +2,11 @@ const assert = require( 'assert' );
 const path = require( 'path' );
 
 const { formatTimestamp, uniqueMarkdownPath } = require( '../filename-utils' );
+const main = require( 'fs' ).readFileSync( require( 'path' ).join( __dirname, '..', 'main.js' ), 'utf8' );
 
 assert.strictEqual( formatTimestamp( new Date( 2026, 5, 17, 15, 30, 45 )), '2026-06-17_15-30-45' );
 assert.strictEqual( formatTimestamp( new Date( 2026, 5, 17, 15, 30, 45 )).includes( ':' ), false );
+assert.strictEqual( main.includes( "require( './filename-utils' )" ), false );
 
 function mockFs( existing ) {
     return {
