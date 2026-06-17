@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag, for example 3.0.1'
+        required: true
+        type: string
+      notes:
+        description: 'Release notes file'
+        required: false
+        default: 'release-notes/3.0.1.md'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve release metadata
+        id: release
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="${{ inputs.tag }}"
+            notes="${{ inputs.notes }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+            notes="release-notes/${GITHUB_REF_NAME}.md"
+          fi
+
+          if [ ! -f "${notes}" ]; then
+            echo "Release notes not found: ${notes}" >&2
+            exit 1
+          fi
+
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "notes=${notes}" >> "${GITHUB_OUTPUT}"
+
+      - name: Verify manifest version
+        shell: bash
+        run: |
+          version="$(node -p "require('./manifest.json').version")"
+          if [ "${version}" != "${{ steps.release.outputs.tag }}" ]; then
+            echo "manifest.json version ${version} does not match tag ${{ steps.release.outputs.tag }}" >&2
+            exit 1
+          fi
+
+      - name: Package plugin
+        shell: bash
+        run: |
+          zip simpread.zip main.js manifest.json styles.css data.json
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create "${{ steps.release.outputs.tag }}" \
+            main.js manifest.json styles.css data.json simpread.zip \
+            --title "${{ steps.release.outputs.tag }} 修复版" \
+            --notes-file "${{ steps.release.outputs.notes }}"
